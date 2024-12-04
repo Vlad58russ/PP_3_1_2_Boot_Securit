@@ -16,15 +16,25 @@
     <label for="lastName">Enter LastName:</label>
     <input type="text" th:field="*{lastName}" id="lastName"/>
     <br/>
+    <label for="age">Enter age:</label>
+    <input type="text" th:field="*{age}" id="age"/>
+    <br/>
     <label for="email">Enter email:</label>
     <input type="text" th:field="*{email}" id="email"/>
     <br/>
+    <label for="password">Enter Password:</label>
+    <input type="password" th:field="*{password}" id="password"/>
     <br/>
-    <label>
-        <select th:name="roles" th:value="*{roles}">
-            <option th:each="role:${roles}" th:value="${role.id}" th:text="${role.role}" selected/>
-        </select>
-    </label>
+    <br/>
+    <div class="form-group row">
+        <label class="col-4 col-form-label">Roles: </label>
+        <div class="col-8">
+            <th:block th:each="role: ${roles}">
+                <input type="checkbox" th:field="*{roles}"
+                       th:text="${role.role}" th:value="${role.id}" class="m-2" />
+            </th:block>
+        </div>
+    </div>
     <input type="submit" value="Update!"/>
 </form>
 <br/>

@@ -1,7 +1,8 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -14,12 +15,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepositories userRepositories;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepositories userRepositories, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepositories userRepositories) {
         this.userRepositories = userRepositories;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -38,14 +37,27 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepositories.save(user);
     }
 
     @Override
     @Transactional
-    public void update(User user) {
-        userRepositories.save(user);
+    public void update(Long id, User user) {
+        Optional<User> userUpdate = userRepositories.findById(id);
+        if (userUpdate.isPresent()) {
+            User userFromRepo = userUpdate.get();
+            userFromRepo.setId(id);
+            userFromRepo.setFirstName(user.getFirstName());
+            userFromRepo.setLastName(user.getLastName());
+            userFromRepo.setAge(user.getAge());
+            userFromRepo.setEmail(user.getEmail());
+            userFromRepo.setRoles(user.getRoles());
+            userFromRepo.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            userRepositories.save(userFromRepo);
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 
     @Override

@@ -6,28 +6,32 @@
 </head>
 <h1 th:inline="text">Information about user - [[${#httpServletRequest.remoteUser}]]!</h1>
 <body>
-<div>
-    <label>Id:</label>
-    <span th:text="${currentUser.getId()}"/>
-    <br/>
-    <label>Username:</label>
-    <span th:text="${currentUser.getUsername()}"/>
-    <br/>
-    <label>FirstName:</label>
-    <span th:text="${currentUser.getFirstName()}"/>
-    <br/>
-    <label>LastName:</label>
-    <span th:text="${currentUser.getLastName()}"/>
-    <br/>
-    <label>Email:</label>
-    <span th:text="${currentUser.getEmail()}"/>
-    <br/>
-    <label>Roles:</label>
-    <span th:text="${currentUser.getAuthorities()}"/>
-    <br/>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
-</div>
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+    <tr>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Age</th>
+        <th>Roles</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user: ${currentUser}">
+        <td th:text="${currentUser.id}">User ID</td>
+        <td th:text="${currentUser.username}">Username</td>
+        <td th:text="${currentUser.email}">E-mail</td>
+        <td th:text="${currentUser.firstName}">First Name</td>
+        <td th:text="${currentUser.lastName}">Last Name</td>
+        <td th:text="${currentUser.age}">Age</td>
+        <td th:text="${currentUser.getAuthorities()}">Roles</td>
+    </tr>
+    </tbody>
+</table>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
 </body>
 </html>
